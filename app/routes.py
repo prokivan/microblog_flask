@@ -11,6 +11,7 @@ from app.forms import ResetPasswordRequestForm
 from app.email import send_password_reset_email
 from app.forms import ResetPasswordForm
 
+import openai
 
 @app.before_request
 def before_request():
@@ -204,3 +205,25 @@ def reset_password(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if request.method == 'POST':
+        user_message = request.form['message']
+        response = get_gpt_response(user_message)
+        return render_template('chat.html', user_message=user_message, response=response)
+    return render_template('chat.html', user_message='', response='')
+
+def get_gpt_response(prompt):
+    try:
+        response = openai.ChatCompletion.create(
+            # model="gpt-3.5-turbo",  # Используйте gpt-4, если у вас есть доступ к этой модели
+            model="gpt-4o-mini",  # Используйте gpt-4, если у вас есть доступ к этой модели
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response.choices[0].message['content'].strip()
+    except Exception as e:
+        return str(e)

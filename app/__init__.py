@@ -11,8 +11,13 @@ from flask_moment import Moment
 from flask import request
 from flask_babel import Babel
 
+import openai
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='.env')
+
 def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,6 +28,8 @@ login.login_view = 'login'
 mail = Mail(app)
 moment = Moment(app)
 babel=Babel(app, locale_selector=get_locale)
+
+openai.api_key=os.getenv('OPENAI_API_KEY')
 
 if not app.debug:
     if app.config['MAIL_SERVER']:

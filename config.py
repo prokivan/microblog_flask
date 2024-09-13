@@ -15,3 +15,6 @@ class Config:
     ADMINS = ['iprokopenko711@gmail.com']
     POSTS_PER_PAGE = 25
     LANGUAGES = ['en', 'es']
+
+
+
